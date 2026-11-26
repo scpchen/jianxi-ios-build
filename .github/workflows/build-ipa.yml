@@ -25,9 +25,7 @@ jobs:
           unzip -q src.zip -d src
           rm -rf src/.github src/README.md
           cp -R src/. .
-          rm -rf src src.zip
-          cp Tools/build-ipa.yml.template .github/workflows/build-ipa.yml
-          rm -rf Tools
+          rm -rf src src.zip Tools
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
