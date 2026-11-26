@@ -1,0 +1,7 @@
+.DS_Store
+dd/
+build/
+Payload/
+*.ipa
+Jianxi.xcodeproj/
+Jianxi/Info.plist
