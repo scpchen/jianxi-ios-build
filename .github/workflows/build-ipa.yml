@@ -14,25 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Import source tree (first run only)
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if [ -f project.yml ]; then exit 0; fi
-          curl -fL --retry 3 -o src.zip https://aka.doubaocdn.com/s/FG4RgTs0ZC
-          echo "3f88d28c5d491f4fa8339c0bdbc8370e985a97fdcea5eb8e939e214c9abe5fe6  src.zip" | shasum -a 256 -c -
-          mkdir src
-          unzip -q src.zip -d src
-          rm -rf src/.github src/README.md
-          cp -R src/. .
-          rm -rf src src.zip Tools
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "Import full source tree [skip ci]"
-          git push
-          gh release delete failed-4 --cleanup-tag --yes || true
-
       - name: Install XcodeGen
         run: brew install xcodegen
 
