@@ -16,8 +16,8 @@ jobs:
 
       - name: Fetch source
         run: |
-          curl -fL --retry 3 -o src.zip https://aka.doubaocdn.com/s/PFZeJ0xtig
-          echo "b258e797e9a082a920c44422165d08898a81c63294a73dcfaaca7800693a5bf2  src.zip" | shasum -a 256 -c -
+          curl -fL --retry 3 -o src.zip https://aka.doubaocdn.com/s/FG4RgTs0ZC
+          echo "3f88d28c5d491f4fa8339c0bdbc8370e985a97fdcea5eb8e939e214c9abe5fe6  src.zip" | shasum -a 256 -c -
           mkdir src
           unzip -q src.zip -d src
 
