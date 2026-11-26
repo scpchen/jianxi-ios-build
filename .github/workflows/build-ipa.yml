@@ -1,0 +1,61 @@
+name: Build IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch source
+        run: |
+          curl -fL --retry 3 -o src.zip https://aka.doubaocdn.com/s/PFZeJ0xtig
+          echo "b258e797e9a082a920c44422165d08898a81c63294a73dcfaaca7800693a5bf2  src.zip" | shasum -a 256 -c -
+          mkdir src
+          unzip -q src.zip -d src
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Build unsigned app
+        run: |
+          cd src
+          xcodegen generate
+          set -o pipefail
+          xcodebuild -project Jianxi.xcodeproj -scheme Jianxi -configuration Release \
+            -sdk iphoneos -derivedDataPath dd \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build 2>&1 | tee ../build.log
+
+      - name: Package IPA
+        run: |
+          cd src
+          mkdir Payload
+          cp -R dd/Build/Products/Release-iphoneos/Jianxi.app Payload/
+          zip -qry ../Jianxi-1.0.0-unsigned.ipa Payload
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "build-${GITHUB_RUN_NUMBER}" Jianxi-1.0.0-unsigned.ipa \
+            --title "简洗 iOS build ${GITHUB_RUN_NUMBER}" \
+            --notes "未签名 IPA，TrollStore 直接安装；也可用 Sideloadly/AltStore 自签"
+
+      - name: Publish failure log
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -f build.log ]; then
+            gh release create "failed-${GITHUB_RUN_NUMBER}" build.log \
+              --title "构建失败日志 ${GITHUB_RUN_NUMBER}" \
+              --notes "xcodebuild 完整日志"
+          fi
