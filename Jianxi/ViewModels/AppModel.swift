@@ -404,10 +404,10 @@ final class AppModel: ObservableObject {
             saveOrder(pending)
             pendingAlipayOrderNo = pending.orderNo
             let encoded = payload.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? ""
-            let scheme = "alipays://platformapi/startApp?appId=20000125&orderSuffix=\(encoded)"
+            let scheme = "alipays://platformapi/startApp?appId=20000125&orderSuffix=\(encoded)&callbackScheme=jianxi"
             if let url = URL(string: scheme), UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                notice("已跳转支付宝收银台，完成付款后返回简洗自动查询结果")
+                notice("已跳转支付宝，完成付款后返回简洗自动查询结果；若支付宝提示交易风险被拦截，请改用账户余额，或在官方胖乖生活 App 内支付此订单")
             } else {
                 notice("未检测到支付宝 App，请安装支付宝，或改用余额支付后在订单中继续付款")
             }
@@ -553,7 +553,7 @@ final class AppModel: ObservableObject {
         default: notice("尚未确认付款，可稍后再次查询")
         }
     }
-
+    
     func selectOutlet(_ outlet: WaterOutlet) {
         if busy { return }
         selectedOutlet = outlet
