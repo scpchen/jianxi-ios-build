@@ -29,6 +29,10 @@ targets:
         LSApplicationQueriesSchemes:
           - alipay
           - alipays
+        CFBundleURLTypes:
+          - CFBundleURLName: dev.rain.jianxi
+            CFBundleURLSchemes:
+              - jianxi
         ITSAppUsesNonExemptEncryption: false
     settings:
       base:

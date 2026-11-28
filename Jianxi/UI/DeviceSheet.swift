@@ -120,6 +120,10 @@ struct DeviceSheet: View {
                     }
                     Button("付款 ¥\(quote.amount)") { model.pay() }
                         .buttonStyle(PrimaryButtonStyle())
+                    if model.payMethod?.method == .alipay {
+                        Text("iOS 上支付宝可能被平台风控拦截；若提示交易风险，请改用账户余额，或在官方胖乖生活 App 内用「单号」找到这笔订单付款")
+                            .font(.system(size: 11)).foregroundColor(.orange)
+                    }
                     Text("付款前会再次复核账单与定位，金额变化会要求重新确认")
                         .font(.system(size: 11)).foregroundColor(.secondary)
                 }
